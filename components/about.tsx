@@ -61,8 +61,7 @@ const projects = [
     size: 'large',
     delay: 0.4,
     logo: '/cliqui-logo.png?height=60&width=60',
-    description:
-      'Site corporativo moderno para uma agência digital, com foco em performance e experiência do usuário. Inclui sistema de CMS personalizado e integração com ferramentas de analytics.',
+    description: 'Plataforma especializada no desenvolvimento de landing pages otimizadas para conversão.',
     desktopImages: ['/cliqui-desktop-1.png?height=400&width=600', '/cliqui-desktop-2.png?height=400&width=600'],
     mobileImages: ['/cliqui-mobile-1.png?height=600&width=300', '/cliqui-mobile-2.png?height=600&width=300'],
     tech: ['React', 'NextJS', 'Tailwind', 'Framer Motion'],
@@ -74,8 +73,7 @@ const projects = [
     size: 'large',
     delay: 0.6,
     logo: '/up-logo.png?height=60&width=60',
-    description:
-      'Site corporativo moderno para uma agência digital, com foco em performance e experiência do usuário. Inclui sistema de CMS personalizado e integração com ferramentas de analytics.',
+    description: 'Clube de benefícios que conecta arquitetos e designers de interiores a oportunidades únicas.',
     desktopImages: ['/up-desktop-1.png?height=400&width=600', '/up-desktop-2.png?height=400&width=600'],
     mobileImages: ['/up-mobile-1.png?height=600&width=300', '/up-mobile-2.png?height=600&width=300'],
     tech: ['React', 'NextJS', 'Tailwind', 'Framer Motion', 'NestJS', 'PostgreSQL', 'Docker'],
@@ -87,8 +85,7 @@ const projects = [
     size: 'large',
     delay: 0.8,
     logo: '/higor-portfolio-logo.svg?height=60&width=60',
-    description:
-      'Site corporativo moderno para uma agência digital, com foco em performance e experiência do usuário. Inclui sistema de CMS personalizado e integração com ferramentas de analytics.',
+    description: 'Portfólio interativo para desenvolvedores, com visual inspirado em terminal (CMD).',
     desktopImages: [
       '/higor-portfolio-desktop-1.png?height=400&width=600',
       '/higor-portfolio-desktop-2.png?height=400&width=600',

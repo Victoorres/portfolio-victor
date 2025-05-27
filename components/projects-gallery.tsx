@@ -127,8 +127,7 @@ export default function ProjectsGallery() {
               className="flex items-end"
             >
               <p className="text-gray-600 text-base lg:text-lg">
-                Trabalhos autorais e projetos em andamento, apresentados como posts para revelar o processo por trás de
-                cada criação.
+                Criações autorais e projetos em andamento, compartilhados como posts inspiradores no Instagram.
               </p>
             </motion.div>
           </div>
@@ -141,80 +140,81 @@ export default function ProjectsGallery() {
                 initial={{ opacity: 0, y: 50 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-[1.02] cursor-hover"
               >
-                {/* Post Header */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-100">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-lime-400 rounded-full flex items-center justify-center cursor-hover">
-                      <Image
-                        src={project.avatar || '/placeholder.svg'}
-                        alt={project.username}
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                      />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900 text-sm">{project.username}</p>
-                      <p className="text-gray-500 text-xs">{project.timeAgo}</p>
-                    </div>
-                  </div>
-                  <button className="text-gray-400 hover:text-gray-600 transition-colors">
-                    <MoreHorizontal className="w-5 h-5" />
-                  </button>
-                </div>
-
-                {/* Post Image */}
-                <div className="relative aspect-square bg-gray-100 cursor-hover">
-                  <Image src={project.image || '/placeholder.svg'} alt="Project" fill className="object-cover" />
-                </div>
-
-                {/* Post Actions */}
-                <div className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-4">
-                      <button onClick={() => toggleLike(project.id)} className="transition-colors">
-                        <Heart
-                          className={`w-6 h-6 ${
-                            likedPosts.includes(project.id)
-                              ? 'fill-red-500 text-red-500'
-                              : 'text-gray-700 hover:text-red-500'
-                          }`}
+                <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-hover">
+                  {/* Post Header */}
+                  <div className="flex items-center justify-between p-4 border-b border-gray-100">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-lime-400 rounded-full flex items-center justify-center cursor-hover">
+                        <Image
+                          src={project.avatar || '/placeholder.svg'}
+                          alt={project.username}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
                         />
-                      </button>
-                      <button className="text-gray-700 hover:text-gray-900 transition-colors">
-                        <MessageCircle className="w-6 h-6" />
-                      </button>
-                      <button className="text-gray-700 hover:text-gray-900 transition-colors">
-                        <Share className="w-6 h-6" />
-                      </button>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900 text-sm">{project.username}</p>
+                        <p className="text-gray-500 text-xs">{project.timeAgo}</p>
+                      </div>
                     </div>
+                    <button className="text-gray-400 hover:text-gray-600 transition-colors">
+                      <MoreHorizontal className="w-5 h-5" />
+                    </button>
                   </div>
 
-                  {/* Likes Count */}
-                  <p className="font-semibold text-gray-900 text-sm mb-2">
-                    {(project.likes + (likedPosts.includes(project.id) ? 1 : 0)).toLocaleString()} curtidas
-                  </p>
-
-                  {/* Caption */}
-                  <div className="text-sm text-gray-700 mb-2">
-                    <span className="font-semibold">{project.username}</span> {project.caption}
+                  {/* Post Image */}
+                  <div className="relative aspect-square bg-gray-100 cursor-hover">
+                    <Image src={project.image || '/placeholder.svg'} alt="Project" fill className="object-cover" />
                   </div>
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1 mb-2">
-                    {project.tags.map((tag, tagIndex) => (
-                      <span key={tagIndex} className="text-lime-500 text-sm hover:underline cursor-hover">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                  {/* Post Actions */}
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-4">
+                        <button onClick={() => toggleLike(project.id)} className="transition-colors">
+                          <Heart
+                            className={`w-6 h-6 ${
+                              likedPosts.includes(project.id)
+                                ? 'fill-red-500 text-red-500'
+                                : 'text-gray-700 hover:text-red-500'
+                            }`}
+                          />
+                        </button>
+                        <button className="text-gray-700 hover:text-gray-900 transition-colors">
+                          <MessageCircle className="w-6 h-6" />
+                        </button>
+                        <button className="text-gray-700 hover:text-gray-900 transition-colors">
+                          <Share className="w-6 h-6" />
+                        </button>
+                      </div>
+                    </div>
 
-                  {/* Comments */}
-                  <button className="text-gray-500 text-sm hover:text-gray-700 transition-colors">
-                    Ver todos os {project.comments} comentários
-                  </button>
+                    {/* Likes Count */}
+                    <p className="font-semibold text-gray-900 text-sm mb-2">
+                      {(project.likes + (likedPosts.includes(project.id) ? 1 : 0)).toLocaleString()} curtidas
+                    </p>
+
+                    {/* Caption */}
+                    <div className="text-sm text-gray-700 mb-2">
+                      <span className="font-semibold">{project.username}</span> {project.caption}
+                    </div>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {project.tags.map((tag, tagIndex) => (
+                        <span key={tagIndex} className="text-lime-500 text-sm hover:underline cursor-hover">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Comments */}
+                    <button className="text-gray-500 text-sm hover:text-gray-700 transition-colors">
+                      Ver todos os {project.comments} comentários
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}
