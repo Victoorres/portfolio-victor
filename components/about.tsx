@@ -65,7 +65,7 @@ const projects = [
     desktopImages: ['/cliqui-desktop-1.png?height=400&width=600', '/cliqui-desktop-2.png?height=400&width=600'],
     mobileImages: ['/cliqui-mobile-1.png?height=600&width=300', '/cliqui-mobile-2.png?height=600&width=300'],
     tech: ['React', 'NextJS', 'Tailwind', 'Framer Motion'],
-    liveUrl: 'https://digital-agency.com',
+    liveUrl: 'https://usecliqui.com.br',
   },
   {
     name: 'UP Connection',

@@ -15,7 +15,7 @@ const stats = [
   },
   {
     icon: Users,
-    number: 20,
+    number: 15,
     label: 'Clientes Satisfeitos',
     suffix: '+',
     description: 'Pessoas que confiaram no meu trabalho',

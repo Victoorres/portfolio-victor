@@ -4,33 +4,200 @@ import type React from 'react';
 
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Mail, Phone, MapPin, Send, ArrowUpRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, ArrowUpRight, Loader2, Clock, X } from 'lucide-react';
+import emailjs from 'emailjs-com';
+import { useToast } from '@/hooks/use-toast';
+
+interface FormData {
+  name: string;
+  email: string;
+  message: string;
+}
 
 export default function Contact() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
-    subject: '',
     message: '',
   });
+  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const whatsappNumber = process.env.NEXT_PUBLIC_CONTACT_PHONE;
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [lastSubmitTime, setLastSubmitTime] = useState<number | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
+  const [showTimeRemaining, setShowTimeRemaining] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+  useEffect(() => {
+    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_USER_ID as string);
+    const storedTime = localStorage.getItem('lastContactSubmitTime');
+    if (storedTime) {
+      const parsedTime = Number.parseInt(storedTime, 10);
+      setLastSubmitTime(parsedTime);
+
+      const currentTime = Date.now();
+      const elapsedTime = currentTime - parsedTime;
+      const waitTime = 30 * 60 * 1000;
+
+      if (elapsedTime < waitTime) {
+        setTimeRemaining(Math.ceil((waitTime - elapsedTime) / 1000));
+        setShowTimeRemaining(true);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (timeRemaining <= 0 || !showTimeRemaining) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setShowTimeRemaining(false);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeRemaining, showTimeRemaining]);
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<FormData> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Nome é obrigatório';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email é obrigatório';
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = 'Mensagem é obrigatória';
+    }
+
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (errors[name as keyof FormData]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const checkTimeLimit = (): boolean => {
+    if (!lastSubmitTime) return true;
+
+    const currentTime = Date.now();
+    const elapsedTime = currentTime - lastSubmitTime;
+    const waitTime = 30 * 60 * 1000; // 30 minutos em milissegundos
+
+    if (elapsedTime < waitTime) {
+      const remainingSeconds = Math.ceil((waitTime - elapsedTime) / 1000);
+      setTimeRemaining(remainingSeconds);
+      setShowTimeRemaining(true);
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmitAttempt = (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    if (!checkTimeLimit()) {
+      return;
+    }
+
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmSubmit = async () => {
+    setShowConfirmation(false);
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+
+      if (!serviceId || !templateId) {
+        toast({
+          title: 'Erro',
+          description: 'Variáveis de ambiente não estão definidas.',
+        });
+        return;
+      }
+
+      await emailjs
+        .send(serviceId, templateId, {
+          name: formData.name,
+          message: formData.message,
+          email: formData.email,
+        })
+        .then(
+          (result) => {
+            toast({
+              title: 'Sucesso',
+              description: 'Mensagem enviada com sucesso!',
+            });
+          },
+          (error) => {
+            toast({
+              title: 'Erro ao enviar mensagem',
+              description: 'Servidor indisponível, tente novamente mais tarde.',
+            });
+            console.error(error.text);
+          }
+        );
+
+      const currentTime = Date.now();
+      localStorage.setItem('lastContactSubmitTime', currentTime.toString());
+      setLastSubmitTime(currentTime);
+      setTimeRemaining(30 * 60);
+      setShowTimeRemaining(true);
+
+      setSubmitStatus('success');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      console.error('Erro ao enviar formulário:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const cancelSubmit = () => {
+    setShowConfirmation(false);
+  };
+
+  const formatTimeRemaining = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -112,7 +279,7 @@ export default function Contact() {
           >
             {/* Form Container */}
             <div className="relative bg-gray-800/50 backdrop-blur-xl rounded-3xl p-8 border border-gray-700/50 shadow-2xl mt-1 lg:mt-[3vh]">
-              <form onSubmit={handleSubmit} className="relative space-y-6">
+              <form onSubmit={handleSubmitAttempt} className="relative space-y-6">
                 {/* Name & Email Row */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <motion.div
@@ -177,12 +344,27 @@ export default function Contact() {
                   <Button
                     type="submit"
                     className="group relative w-full bg-lime-400 hover:bg-lime-500 text-black font-medium h-14 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl overflow-hidden"
+                    disabled={isSubmitting || showTimeRemaining}
                   >
-                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <span className="relative flex items-center justify-center space-x-2">
-                      <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                      <span>Enviar Mensagem</span>
-                    </span>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Enviando...
+                      </>
+                    ) : showTimeRemaining ? (
+                      <>
+                        <Clock className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        Aguarde {formatTimeRemaining(timeRemaining)}
+                      </>
+                    ) : (
+                      <>
+                        <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <span className="relative flex items-center justify-center space-x-2">
+                          <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                          <span>Enviar Mensagem</span>
+                        </span>
+                      </>
+                    )}
                   </Button>
                 </motion.div>
               </form>
@@ -190,6 +372,37 @@ export default function Contact() {
           </motion.div>
         </div>
       </div>
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 rounded-lg shadow-lg max-w-md w-full p-6 relative">
+            <button
+              onClick={cancelSubmit}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+              aria-label="Fechar"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <h3 className="text-xl font-bold mb-4">Confirmar envio</h3>
+            <p className="mb-6">Você só poderá enviar outra mensagem após 30 minutos. Deseja continuar?</p>
+            <div className="flex justify-end space-x-3">
+              <Button
+                variant="outline"
+                onClick={cancelSubmit}
+                className="group relative w-full text-black font-medium h-14 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl overflow-hidden"
+              >
+                Cancelar
+              </Button>
+              <Button
+                size="lg"
+                className="group relative w-full bg-lime-400 hover:bg-lime-500 text-black font-medium h-14 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl overflow-hidden"
+                onClick={handleConfirmSubmit}
+              >
+                Confirmar envio
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

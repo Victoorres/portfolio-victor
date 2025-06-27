@@ -19,7 +19,7 @@ interface Testimonial {
 
 interface TestimonialsModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (scroll: boolean) => void;
   testimonial: Testimonial | null;
   allTestimonials: Testimonial[];
 }
@@ -58,7 +58,7 @@ export default function TestimonialsModal({ isOpen, onClose, testimonial, allTes
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-          onClick={onClose}
+          onClick={() => onClose(false)}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -107,7 +107,7 @@ export default function TestimonialsModal({ isOpen, onClose, testimonial, allTes
                   </div> */}
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full">
+              <Button variant="ghost" size="icon" onClick={() => onClose(false)} className="rounded-full">
                 <X className="w-5 h-5" />
               </Button>
             </div>
@@ -190,7 +190,7 @@ export default function TestimonialsModal({ isOpen, onClose, testimonial, allTes
               <div className="text-center pt-6 border-t border-gray-200">
                 <p className="text-gray-600 mb-4">Gostou do que viu? Vamos conversar sobre seu projeto!</p>
                 <Button
-                  onClick={onClose}
+                  onClick={() => onClose(true)}
                   className="bg-lime-400 hover:bg-lime-500 text-black font-medium px-8 py-3 rounded-full transition-all duration-300 hover:scale-105"
                 >
                   Entrar em Contato

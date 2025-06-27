@@ -10,38 +10,38 @@ import TestimonialsModal from './testimonials-modal';
 const testimonials = [
   {
     id: 1,
-    name: 'Mariana Rocha',
-    role: 'Designer Gráfica',
+    name: 'Matheus S.',
+    role: 'Estudande Eng. Computação',
     content:
-      'Trabalhar com Victor foi uma experiência incrível! Ele entendeu perfeitamente a proposta visual do projeto e traduziu tudo em um site moderno e funcional...',
+      'Trabalhar com o Victor foi simplesmente sensacional! Desde o início, ele entendeu direitinho o que eu queria e conseguiu transformar minhas ideias em um site moderno e super funcional...',
     fullContent:
-      'Trabalhar com Victor foi uma experiência incrível! Ele entendeu perfeitamente a proposta visual do projeto e traduziu tudo em um site moderno e funcional. Sempre muito atencioso e aberto a sugestões, fez questão de manter a comunicação clara durante todas as etapas. O resultado final ficou exatamente como eu imaginava — ou melhor! Com certeza, voltarei a trabalhar com ele em futuros projetos.',
+      'Trabalhar com o Victor foi simplesmente sensacional! Desde o início, ele entendeu direitinho o que eu queria e conseguiu transformar minhas ideias em um site moderno e super funcional. Sempre muito atencioso, ouviu cada sugestão com carinho e manteve a comunicação clara o tempo todo. O resultado ficou até melhor do que eu imaginava! Sem dúvida, quero contar com ele de novo nos próximos projetos.',
     rating: 5,
-    avatar: 'https://randomuser.me/api/portraits/women/15.jpg',
+    avatar: './matheus.png',
     duration: '3 semanas',
   },
   {
     id: 2,
-    name: 'Carlos Almeida',
-    role: 'Empreendedor',
+    name: 'Dimas N.',
+    role: 'TI',
     content:
-      'Victor nos ajudou a tirar do papel o nosso sistema interno de gestão. Sempre comprometido com prazos e super proativo em propor soluções...',
+      'O Victor foi essencial pra tirarmos do papel o nosso sistema interno de gestão. Sempre comprometido com os prazos e super proativo, ele não só executou o que pedimos, como também...',
     fullContent:
-      'Victor nos ajudou a tirar do papel o nosso sistema interno de gestão. Sempre comprometido com prazos e super proativo em propor soluções para melhorar o fluxo de trabalho. A entrega foi além do que esperávamos, com uma interface intuitiva e performance impecável. Recomendo fortemente para quem busca um desenvolvedor confiável e competente.',
+      'O Victor foi essencial pra tirarmos do papel o nosso sistema interno de gestão. Sempre comprometido com os prazos e super proativo, ele não só executou o que pedimos, como também trouxe várias ideias que melhoraram muito o nosso fluxo de trabalho. A entrega superou as expectativas: uma interface intuitiva, desempenho excelente e tudo funcionando redondinho. Recomendo demais pra quem procura um desenvolvedor confiável, talentoso e parceiro de verdade.',
     rating: 5,
-    avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
+    avatar: './dimas.png',
     duration: '2 meses',
   },
   {
     id: 3,
-    name: 'Sofia Martins',
-    role: 'Influencer Digital',
+    name: 'Beatriz F.',
+    role: 'Designer Gráfico',
     content:
-      'O Victor criou meu site pessoal e eu amei! Ele captou exatamente a minha personalidade e estilo, além de ter deixado tudo super responsivo...',
+      'O Victor criou meu site pessoal e eu simplesmente amei! Ele conseguiu traduzir direitinho minha personalidade e estilo em cada detalhe. Além disso deixou tudo super responsivo e fácil de atualizar...',
     fullContent:
-      'O Victor criou meu site pessoal e eu amei! Ele captou exatamente a minha personalidade e estilo, além de ter deixado tudo super responsivo e fácil de atualizar. Recebo elogios até hoje sobre como o site é bonito e rápido. Fora isso, o atendimento foi impecável, sempre muito paciente e dedicado. Super recomendo!',
+      'O Victor criou meu site pessoal e eu simplesmente amei! Ele conseguiu traduzir direitinho minha personalidade e estilo em cada detalhe. Além disso, deixou tudo super responsivo e fácil de atualizar. Até hoje recebo elogios sobre como o site é bonito e rápido! E o atendimento? Impecável. Sempre paciente, atencioso e dedicado. Recomendo de olhos fechados!',
     rating: 5,
-    avatar: 'https://randomuser.me/api/portraits/women/37.jpg',
+    avatar: './beatriz.png',
     duration: '1 mês',
   },
 ];
@@ -57,9 +57,21 @@ export default function Testimonials() {
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {
+  const closeModal = (scroll: boolean) => {
     setIsModalOpen(false);
     setSelectedTestimonial(null);
+
+    if (scroll) scrollToContact();
+  };
+
+  const scrollToContact = () => {
+    const element = document.querySelector('#contact');
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
   };
 
   return (
