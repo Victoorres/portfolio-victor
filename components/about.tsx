@@ -77,7 +77,7 @@ const projects = [
     desktopImages: ['/up-desktop-1.png?height=400&width=600', '/up-desktop-2.png?height=400&width=600'],
     mobileImages: ['/up-mobile-1.png?height=600&width=300', '/up-mobile-2.png?height=600&width=300'],
     tech: ['React', 'NextJS', 'Tailwind', 'Framer Motion', 'NestJS', 'PostgreSQL', 'Docker'],
-    liveUrl: 'https://up-landing-page.vercel.app/',
+    liveUrl: 'https://upconnection.app',
   },
   {
     name: 'Higor Giovane - Portfólio',
